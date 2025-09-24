@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agora Supply Chain Simulator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="connection-status" id="connectionStatus">Connecting...</div>
+    <div class="error-banner" id="errorBanner"></div>
+    
+    <div class="container">
+        <header>
+            <h1>Agora Supply Chain Simulator</h1>
+            <div class="controls">
+                <button id="startBtn" class="btn btn-primary">Start Simulation</button>
+                <button id="pauseBtn" class="btn btn-secondary" disabled>Pause</button>
+                <button id="stopBtn" class="btn btn-danger" disabled>Stop</button>
+                <button id="resetBtn" class="btn btn-warning">Reset</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Top Row: Map and Key Metrics -->
+            <div class="top-section">
+                <div class="map-section">
+                    <div class="section-header">
+                        <h2>Supply Chain Network</h2>
+                        <div class="legend-compact">
+                            <span class="legend-item"><span class="dot red"></span>Stores</span>
+                            <span class="legend-item"><span class="dot orange"></span>Warehouses</span>
+                            <span class="legend-item"><span class="dot green"></span>Factories</span>
+                            <span class="legend-item"><span class="line purple"></span>Deliveries</span>
+                        </div>
+                    </div>
+                    <div class="map-container">
+                        <canvas id="cityMap" width="800" height="650"></canvas>
+                    </div>
+                </div>
+                
+                <div class="metrics-section">
+                    <div class="section-header">
+                        <h2>Live Metrics</h2>
+                        <div class="status-indicator">
+                            <span class="status-dot" id="statusDot"></span>
+                            <span id="simStatus">Stopped</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card primary">
+                            <div class="metric-value" id="totalRevenue">$0.00</div>
+                            <div class="metric-label">Total Revenue</div>
+                        </div>
+                        <div class="metric-card success">
+                            <div class="metric-value" id="netProfit">$0.00</div>
+                            <div class="metric-label">Net Profit</div>
+                        </div>
+                        <div class="metric-card info">
+                            <div class="metric-value" id="ordersFulfilled">0</div>
+                            <div class="metric-label">Orders Fulfilled</div>
+                        </div>
+                        <div class="metric-card warning">
+                            <div class="metric-value" id="fulfillmentRate">100%</div>
+                            <div class="metric-label">Fulfillment Rate</div>
+                        </div>
+                    </div>
+                    
+                    <div class="simulation-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">Step:</span>
+                            <span class="stat-value" id="simStep">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Time:</span>
+                            <span class="stat-value" id="simTime">0.0s</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Active Agents:</span>
+                            <span class="stat-value" id="activeAgents">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Efficiency:</span>
+                            <span class="stat-value" id="efficiencyScore">0/100</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Row: Agents, Activity, and Analysis -->
+            <div class="bottom-section">
+                <div class="agents-section">
+                    <div class="section-header">
+                        <h3>Agent Status</h3>
+                        <div class="agent-summary">
+                            <span class="agent-count" id="agentCount">0 agents</span>
+                        </div>
+                    </div>
+                    <div id="agentsList" class="agents-grid">
+                        <!-- Agent status will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="activity-section">
+                    <div class="section-header">
+                        <h3>Activity Feed</h3>
+                        <button class="clear-log-btn" onclick="document.getElementById('activityLog').innerHTML = ''">Clear</button>
+                    </div>
+                    <div id="activityLog" class="activity-feed">
+                        <!-- Activity messages will appear here -->
+                    </div>
+                </div>
+                
+                <div class="analysis-section">
+                    <div class="section-header">
+                        <h3>Performance Analysis</h3>
+                    </div>
+                    
+                    <div class="analysis-tabs">
+                        <button class="tab-btn active" onclick="showTab('financial')">Financial</button>
+                        <button class="tab-btn" onclick="showTab('agents')">Agents</button>
+                        <button class="tab-btn" onclick="showTab('events')">Events</button>
+                    </div>
+                    
+                    <div class="tab-content">
+                        <div id="financial-tab" class="tab-panel active">
+                            <canvas id="financialChart" width="280" height="120"></canvas>
+                            <div class="financial-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Storage Costs:</span>
+                                    <span class="detail-value" id="storageCosts">$0.00</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Lost Sales:</span>
+                                    <span class="detail-value" id="lostSales">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="agents-tab" class="tab-panel">
+                            <div id="agentPerformance" class="agent-performance-grid">
+                                <!-- Agent performance will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <div id="events-tab" class="tab-panel">
+                            <div class="events-summary">
+                                <div class="event-stat">
+                                    <div class="event-number" id="totalEvents">0</div>
+                                    <div class="event-label">Total Events</div>
+                                </div>
+                                <div class="event-stat">
+                                    <div class="event-number" id="stockoutEvents">0</div>
+                                    <div class="event-label">Stockouts</div>
+                                </div>
+                                <div class="event-stat">
+                                    <div class="event-number" id="ordersLost">0</div>
+                                    <div class="event-label">Lost Orders</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/performance-optimizations.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/simulation.js') }}"></script>
+</body>
+</html>

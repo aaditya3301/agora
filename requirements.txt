@@ -1,0 +1,17 @@
+# Core web framework
+flask>=2.0.0
+flask-socketio>=5.0.0
+python-socketio>=5.0.0
+
+# Testing framework
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+
+# Development tools
+black>=22.0.0
+flake8>=4.0.0
+isort>=5.10.0
+
+# Optional: For enhanced logging and debugging
+colorlog>=6.0.0
