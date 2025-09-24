@@ -333,14 +333,16 @@ def handle_reset_simulation():
         emit('error', {'message': f'Failed to reset simulation: {str(e)}', 'recoverable': True})
 
 
-if __name__ == '__main__':
-    # Initialize simulation components
+# Initialize simulation components for production
+try:
     initialize_simulation()
-    
-    # Create sample agents for demonstration
     create_sample_agents()
-    
-    # Start the web application
+    logger.info("Simulation components initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize simulation: {e}")
+
+if __name__ == '__main__':
+    # Start the web application for local development
     logger.info("Starting Agora Supply Chain Simulator web interface...")
     port = int(os.environ.get('PORT', 5000))
-    socketio.run(app, debug=False, host='0.0.0.0', port=port)
+    socketio.run(app, debug=False, host='0.0.0.0', port=port, allow_unsafe_werkzeug=True)
