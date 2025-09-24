@@ -88,11 +88,7 @@ agora-supply-chain-simulator/
    python web/app.py
    ```
    
-   Or use the Makefile:
-   ```bash
-   make install
-   make run
-   ```
+
 
 4. **Open your browser**
    Navigate to `http://localhost:5000` to view the simulation interface
@@ -187,17 +183,7 @@ The system tracks various performance indicators:
 
 ## 🧪 Testing
 
-Run the test suite to verify system functionality:
-
-```bash
-# Run all tests
-python -m pytest
-
-# Run specific test categories
-python -m pytest tests/agents/     # Agent behavior tests
-python -m pytest tests/simulation/ # Simulation logic tests
-python -m pytest tests/integration/ # End-to-end tests
-```
+The project includes comprehensive testing for all components. Tests are located in the respective module directories.
 
 ## 🛠️ Development
 
