@@ -59,7 +59,6 @@ agora-supply-chain-simulator/
 │   ├── app.py            # Flask application
 │   ├── templates/        # HTML templates
 │   └── static/          # CSS, JavaScript, assets
-├── .kiro/specs/          # Design documentation
 └── requirements.txt      # Python dependencies
 ```
 
